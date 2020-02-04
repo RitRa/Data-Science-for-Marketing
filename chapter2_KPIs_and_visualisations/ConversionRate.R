@@ -83,3 +83,34 @@ ggplot(conversionsByMaritalStatus, aes(x="", y=Count, fill=Marital)) +
     legend.position='bottom'
   )
 
+#######
+# Conversions by age and marital status
+
+#### 5. Conversions by Age Groups & Marital Status ####
+conversionsByAgeMarital <- df %>% 
+  group_by(AgeGroup=cut(age, breaks= seq(20, 70, by = 10)), Marital=marital) %>% 
+  summarise(Count=n(), NumConversions=sum(conversion)) %>%
+  mutate(TotalCount=sum(Count)) %>%
+  mutate(ConversionRate=NumConversions/TotalCount)
+
+conversionsByAgeMarital$AgeGroup <- as.character(conversionsByAgeMarital$AgeGroup)
+
+conversionsByAgeMarital$AgeGroup[is.na(conversionsByAgeMarital$AgeGroup)] <- "70+"
+
+View(conversionsByAgeMarital)
+
+# bar chart
+ggplot(conversionsByAgeMarital, aes(x=AgeGroup, y=ConversionRate, fill=Marital)) + 
+  geom_bar(width=0.5, stat="identity", position="dodge") +
+  ylab("Conversion Rate (%)") +
+  xlab("Age") +
+  ggtitle("Conversion Rates by Age and Marital Status") +
+  theme(plot.title=element_text(hjust=0.5))
+
+# stacked bar chart
+ggplot(conversionsByAgeMarital, aes(x=AgeGroup, y=ConversionRate, fill=Marital)) + 
+  geom_bar(width=0.5, stat="identity", position="stack") +
+  ylab("Conversion Rate (%)") +
+  xlab("Age") +
+  ggtitle("Conversion Rates by Age and Marital Status") +
+  theme(plot.title=element_text(hjust=0.5))
