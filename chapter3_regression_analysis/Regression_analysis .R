@@ -1,6 +1,9 @@
 # Regression Analysis
 
 # libraries used
+# install.packages("dplyr")
+# install.packages("ggplot2")
+
 library(dplyr)
 library(ggplot2)
 
@@ -61,10 +64,7 @@ ggplot(salesChannel, aes(x="", y=Count, fill=Channel))  +
 
 # As you can see from these charts, more than half of the engaged customers were from agents, whereas non-engaged customers are more evenly distributed across all four different channels. 
 
-
-
 # Total claim amounts
-
 ggplot(df, aes(x="", y=Total.Claim.Amount)) + 
   geom_boxplot() +
   facet_wrap(~Engaged) +
@@ -83,4 +83,51 @@ ggplot(df, aes(x="", y=Total.Claim.Amount)) +
   xlab("0: Not Engaged, 1: Engaged") +
   ggtitle("Engaged vs. Not Engaged: Total Claim Amount") +
   theme(plot.title=element_text(hjust=0.5))
+
+## Regression analysis
+
+# get data types of each column
+sapply(df, class)
+# the type of the State column is "factor", which means that the variable is a categorical variable.
+
+
+# summary statistics per column
+summary(df)
+
+# get numeric columns
+continuousDF <- select_if(df, is.numeric)
+colnames(continuousDF)
+
+# Fit regression model with continuous variables
+logit.fit <- glm(Engaged ~ ., data = continuousDF, family = binomial)
+
+
+summary(logit.fit)
+
+
+# Categorical variables
+
+# a. Education
+# Fit regression model with Education factor variables
+logit.fit <- glm(Engaged ~ factor(Education), data = df, family = binomial)
+summary(logit.fit)
+
+# b. Education + Gender
+# Fit regression model with Education & Gender variables
+logit.fit <- glm(Engaged ~ factor(Education) + factor(Gender), data = df, family = binomial)
+
+summary(logit.fit)
+
+
+# Combining continuous and categorical variables
+continuousDF$Gender <- factor(df$Gender)
+continuousDF$Education <- factor(df$Education)
+
+View(continuousDF)
+
+# Fit regression model with Education & Gender variables
+logit.fit <- glm(Engaged ~ ., data = continuousDF, family = binomial)
+summary(logit.fit)
+
+
 
