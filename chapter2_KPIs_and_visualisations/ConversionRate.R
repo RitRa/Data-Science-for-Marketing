@@ -1,5 +1,12 @@
 # Conversion Rate
 
+# libraries used
+# install.packages("dplyr")
+# install.packages("ggplot2")
+
+library(dplyr)
+library(ggplot2)
+
 # import data
 df <- read.csv("~/Dropbox/Study/github/Data-Science-for-Marketing/data/bank-additional/bank-additional-full.csv",
                header = TRUE, 
